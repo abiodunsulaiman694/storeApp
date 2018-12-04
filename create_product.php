@@ -1,3 +1,46 @@
+<?php
+
+
+
+require_once "config/connect_db.php";
+$name = ""; $price = ""; $picture = "";
+$description = ""; $expiry_date = ""; $supplier = ""; $date_supplied; $qty = "";
+
+if($_SERVER["REQUEST_METHOD"] == "POST") {
+  //validate
+  $input_name = trim($_POST['name']);
+  $input_price = trim($_POST['price']);
+  $input_description = trim($_POST['description']);
+  $input_expiry_date = trim($_POST['expiry_date']);
+  $input_date_supplied = trim($_POST['date_supplied']);
+  $input_supplier = trim($_POST['supplier']);
+  $input_qty_left = trim($_POST['qty_left']);
+
+  if (empty($input_name) || empty($input_price) || empty($input_qty_left)) {
+    $error = "Name, Price and Quantity fields are compulsory";
+  } else {
+    $sql = "INSERT INTO products (name, price, description, qty_left, expiry_date) VALUES (?, ?, ?, ?, ?)";
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+      //bind variables to statement
+      mysqli_stmt_bind_param($stmt, "sssss", $param_name, $param_price, $param_description, $param_qty_left, $param_expiry_date);
+      $param_name = $input_name;
+      $param_price = $input_price;
+      $param_description = $input_description;
+      $param_expiry_date = $input_expiry_date;
+      $param_qty_left = $input_qty_left;
+      //attempt to execute statement on database
+      if (mysqli_stmt_execute($stmt)) {
+        //products created successfully
+        //redirect to products page
+        header("Location: products.php");
+        exit();
+      }
+    }
+  }
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -52,7 +95,7 @@
           </div>
         </div>
         <div class="box-body">
-          <form method="post">
+          <form method="post" enctype="multipart/form-data">
             <div class="row form-group col-md-12">
               <div class="col-md-4">
                 <label for="name">Name</label>
