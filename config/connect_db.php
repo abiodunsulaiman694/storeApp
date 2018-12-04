@@ -1,16 +1,11 @@
 <?php
-
-$server = "localhost";
-$username = "root";
-$password = "";
-$db = "storemanagerdb";
-
+define('SERVER', 'localhost');
+define('USERNAME', 'root');
+define('PASSWORD', '');
+define('DB', 'storemanagerdb');
 //connect to database
-$conn = new mysqli($server, $username, $password, $db);
-
-// check
-if ($conn->connect_error) {
-	die("Error connecting to database - ". $conn->connect_error);
-} else {
-	//Yay! Successful
+$conn = mysqli_connect(SERVER, USERNAME, PASSWORD, DB);
+//check
+if ($conn === false ) {
+	die("Error connecting to database - ".mysqli_connect_error());
 }
