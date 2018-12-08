@@ -1,45 +1,45 @@
 <?php
 require_once "config/connect_db.php";
 
+
+$id = trim($_GET['id']);
+$sql = "SELECT * FROM products WHERE id = ?";
+if ($stmt = mysqli_prepare($conn, $sql)) {
+  mysqli_stmt_bind_param($stmt, "i", $id);
+  if (mysqli_stmt_execute($stmt)) {
+    $result = mysqli_stmt_get_result($stmt);
+    if (mysqli_num_rows($result) == 1) {
+      $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+      $name = $row['name'];
+      $price = $row['price'];
+      $description = $row['description'];
+      $expiry_date = $row['expiry_date'];
+    } else {
+      header("Location: products.php");
+      exit();
+    }
+  }
+}
+
+
 if($_SERVER["REQUEST_METHOD"] == "POST") {
   //validate
-  //$original = "   bryta hub   ";
-  //trim($original) = "bryta hub";
   $input_name = trim($_POST['name']);
   $input_price = trim($_POST['price']);
   $input_description = trim($_POST['description']);
   $input_expiry_date = trim($_POST['expiry_date']);
-  $input_date_supplied = trim($_POST['date_supplied']);
-  $input_supplier = trim($_POST['supplier']);
-  $input_qty_left = trim($_POST['qty_left']);
-
-  if (empty($input_name) || empty($input_price) || empty($input_qty_left)) {
-    $error = "Name, Price and Quantity fields are compulsory";
+  if (empty($input_name) || empty($input_price) ) {
+    $error = "Name and Price fields are compulsory";
   } else {
-    $sql = "INSERT INTO products (name, price, description, qty_left, expiry_date) VALUES (?, ?, ?, ?, ?)";
+    $sql = "UPDATE products SET name = ?, price = ?, description = ?, expiry_date = ? WHERE id = ?";
     if ($stmt = mysqli_prepare($conn, $sql)) {
       //bind variables to statement
-      mysqli_stmt_bind_param($stmt, "sssss", $input_name, $input_price, $input_description, $input_qty_left, $input_expiry_date);
-      // $param_name = $input_name;
-      // $param_price = $input_price;
-      // $param_description = $input_description;
-      // $param_expiry_date = $input_expiry_date;
-      // $param_qty_left = $input_qty_left;
-      //attempt to execute statement on database
+      mysqli_stmt_bind_param($stmt, "ssssi", $input_name, $input_price, $input_description, $input_expiry_date, $id);
       if (mysqli_stmt_execute($stmt)) {
-        //products created successfully
-        $product_id = mysqli_stmt_insert_id($stmt);
-
-        $sql_supply = "INSERT INTO supplies(product_id, supplier, quantity) VALUES (?, ?, ?)";
-        if($stmt_supply = mysqli_prepare($conn, $sql_supply)) {
-          mysqli_stmt_bind_param($stmt_supply, "iss", $product_id, $input_supplier, $input_qty_left);
-          if (mysqli_stmt_execute($stmt_supply)) {
-            //redirect to products page
-            header("Location: products.php");
-            exit();
-          }
-        }
-        
+        //products updated successfully
+        //redirect to products page
+        header("Location: products.php");
+        exit();
       }
     }
   }
@@ -52,7 +52,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Store Manager| Create new Product</title>
+  <title>Store Manager| Edit Product</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <?php include('partials/styles.php') ?>
@@ -74,8 +74,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Create new Product
-        <small>Create new Product</small>
+        Edit Product
+        <small>Edit Product</small>
       </h1>
       <!-- <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -90,7 +90,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
       <!-- Default box -->
       <div class="box">
         <div class="box-header with-border">
-          <h3 class="box-title">Create new Product</h3>
+          <h3 class="box-title">Edit Product</h3>
 
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
@@ -107,7 +107,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="name">Name</label>
               </div>
                 <div class="col-md-8">
-                  <input type="text" name="name" id="name" class="form-control" required="">
+                  <input type="text" name="name" id="name" class="form-control" required="" value="<?php echo $name; ?>">
                 </div>
             </div>
 
@@ -116,7 +116,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="price">Price</label>
               </div>
                 <div class="col-md-8">
-                  <input type="text" name="price" id="price" class="form-control" required="">
+                  <input type="text" name="price" id="price" class="form-control" required="" value="<?php echo $price; ?>">
                 </div>
             </div>
 
@@ -131,10 +131,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="row form-group col-md-12">
               <div class="col-md-4">
-              <label for="description">description</label>
+              <label for="description">Description</label>
               </div>
                 <div class="col-md-8">
-                  <textarea name="description" id="description" class="form-control" required></textarea>
+                  <textarea name="description" id="description" class="form-control" required><?php echo $description; ?></textarea>
                 </div>
             </div>
 
@@ -143,40 +143,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
               <label for="expiry_date">Expiry Date</label>
               </div>
                 <div class="col-md-8">
-                  <input type="date" name="expiry_date" id="expiry_date" class="form-control" required />
+                  <input type="date" name="expiry_date" id="expiry_date" class="form-control" required value="<?php echo $expiry_date ?>" />
                 </div>
             </div>
 
             <div class="row form-group col-md-12">
               <div class="col-md-4">
-              <label for="supplier">Supplier</label>
-              </div>
-                <div class="col-md-8">
-                  <input type="text" name="supplier" id="supplier" class="form-control" required />
-                </div>
-            </div>
-
-            <div class="row form-group col-md-12">
-              <div class="col-md-4">
-              <label for="date_supplied">Date Supplied</label>
-              </div>
-                <div class="col-md-8">
-                  <input type="date" name="date_supplied" id="date_supplied" class="form-control" required />
-                </div>
-            </div>
-
-            <div class="row form-group col-md-12">
-              <div class="col-md-4">
-              <label for="qty_left">Qty Received</label>
-              </div>
-                <div class="col-md-8">
-                  <input type="number" name="qty_left" id="qty_left" class="form-control" required />
-                </div>
-            </div>
-
-            <div class="row form-group col-md-12">
-              <div class="col-md-4">
-              <button type="submit" class="btn btn-primary">Save new Product</button>
+              <button type="submit" class="btn btn-primary">Update Product</button>
               </div>
             </div>
           </form>

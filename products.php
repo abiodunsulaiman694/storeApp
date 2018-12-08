@@ -1,3 +1,14 @@
+<?php require_once 'config/connect_db.php'; ?>
+<?php 
+
+//select query
+$sql = "SELECT * FROM products";
+if ($result = mysqli_query($conn, $sql)) {
+  $total_products = mysqli_num_rows($result);
+} else {
+  $error_msg = "Error fetching products from database";
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -56,7 +67,35 @@
           </div>
         </div>
         <div class="box-body">
-          Start creating your amazing application!
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Qty Left</th>
+                <th>Expiry Date</th>
+                <th>Date Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php while ($product = mysqli_fetch_array($result)) {
+                echo "<tr>";
+                  echo "<td>" . $product['name'] .   "</td>";
+                  echo "<td>" . $product['price'] . "</td>";
+                  echo "<td>" . $product['qty_left'] . "</td>";
+                  echo "<td>" . $product['expiry_date'] . "</td>";
+                  echo "<td>" . $product['date_created'] . "</td>";
+                  echo "<td>
+                          <a class='btn btn-info' href='edit_product.php?id=".$product['id']."'>Edit</a>
+                          <a class='btn btn-danger' href='delete_product.php?id=".$product['id']."'>Delete</a>
+                          <a class='btn btn-warning' href='supply_product.php?id=".$product['id']."'>Add Supply</a>
+                        </td>";
+
+                echo "</tr>";
+              } ?>
+            </tbody>
+          </table>
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
