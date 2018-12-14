@@ -1,3 +1,9 @@
+<?php
+session_start();
+
+
+require_once "config/authchecker.php";
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -52,7 +58,27 @@
           </div>
         </div>
         <div class="box-body">
-          Start creating your amazing application!
+          
+          <table id="sales" class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="sales1">
+                <td colspan="4">
+                  <button class="btn btn-info" data-toggle="modal" data-target="#salesModal" onclick="selectProduct()">
+                    Select Product
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
@@ -68,9 +94,27 @@
   <!-- /.content-wrapper -->
 
   <?php include('partials/footer.php'); ?>
+  <?php include('partials/modal.php') ?>
 </div>
 <!-- ./wrapper -->
 
 <?php include('partials/scripts.php') ?>
+<script>
+  function selectProduct() {
+    //alert("you");
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>

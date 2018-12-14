@@ -1,3 +1,9 @@
+<?php
+session_start();
+
+
+require_once "config/authchecker.php";
+?>
 <!DOCTYPE html>
 <html>
 <head>

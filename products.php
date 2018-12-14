@@ -1,6 +1,8 @@
 <?php require_once 'config/connect_db.php'; ?>
 <?php 
+session_start();
 
+require_once "config/authchecker.php";
 //select query
 $sql = "SELECT * FROM products";
 if ($result = mysqli_query($conn, $sql)) {

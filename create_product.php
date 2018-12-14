@@ -1,4 +1,8 @@
 <?php
+session_start();
+
+
+require_once "config/authchecker.php";
 require_once "config/connect_db.php";
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {

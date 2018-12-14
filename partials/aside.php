@@ -7,7 +7,15 @@
           <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p>Daniel Abiodun</p>
+          <p>
+            <?php
+            if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+              echo $_SESSION['name'];
+            } else {
+              echo "Guest";
+            }
+            ?>
+          </p>
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
       </div>

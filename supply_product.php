@@ -1,6 +1,9 @@
 <?php
 require_once "config/connect_db.php";
 
+session_start();
+
+require_once "config/authchecker.php";
 
 $id = trim($_GET['id']);
 $sql = "SELECT * FROM products WHERE id = ?";

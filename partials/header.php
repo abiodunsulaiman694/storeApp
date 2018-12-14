@@ -19,6 +19,16 @@
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <!-- Messages: style can be found in dropdown.less-->
+          <?php 
+          if (!(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true)) {
+          ?>
+          <li>
+            <a href="register.php">Register</a>
+          </li>
+          <li>
+            <a href="login.php">Login</a>
+          </li>
+          <?php } ?>
           <li class="dropdown messages-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-envelope-o"></i>
@@ -102,10 +112,15 @@
             </ul>
           </li>
           <!-- User Account: style can be found in dropdown.less -->
+          <?php 
+          if ((isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true)) {
+          ?>
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-              <span class="hidden-xs">Daniel Abiodun</span>
+              <span class="hidden-xs">
+                <?php echo $_SESSION['name'] ?>
+              </span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
@@ -113,7 +128,7 @@
                 <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 
                 <p>
-                  Daniel Abiodun - Web Developer
+                  <?php echo $_SESSION['name'] ?> - <?php echo $_SESSION['role'] ?>
                   <small>Member since Nov. 2012</small>
                 </p>
               </li>
@@ -138,12 +153,19 @@
                   <a href="#" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="logout.php" class="btn btn-default btn-flat">Sign out</a>
                 </div>
               </li>
             </ul>
           </li>
+          <?php } ?>
         </ul>
       </div>
     </nav>
   </header>
+
+
+
+
+
+
